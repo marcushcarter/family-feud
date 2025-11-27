@@ -1,7 +1,80 @@
 var app = {
   version: 1,
   currentQ: 0,
-  jsonFile:"https://s3-us-west-2.amazonaws.com/s.cdpn.io/40041/FF3.json",
+
+  allData: {
+    "What makes someone a strong leader?": [
+      ["Good communication", 46],
+      ["Leads by example", 29],
+      ["Makes confident decisions", 15],
+      ["Motivates the team", 7],
+      ["Takes responsibility", 3]
+    ],
+    "What should a leader do when the team is behind on a major deadline?": [
+      ["Identify the main delay and fix it ASAP", 40],
+      ["Meet the team and talk about it", 25],
+      ["Reassign tasks if needed", 15],
+      ["Provide resources to help them finish", 12],
+      ["Set a new timeline", 8]
+    ],
+    "What is the best way to resolve a group conflict?": [
+      ["Listen to all opinions", 35],
+      ["Find a compromise", 28],
+      ["Have a private conversation", 20],
+      ["Talk to a leader/manager", 10],
+      ["Ignore it", 7]
+    ],
+    "Your group member missed the deadline, what should you do?": [
+      ["Ask why privately", 33],
+      ["Offer them help", 25],
+      ["Adjust responsibilities", 18],
+      ["Tell a leader/manager", 12],
+      ["Do the work for them", 2]
+    ],
+    "Name something people should do if there is a fire in a building": [
+      ["Evacuate immediately", 71],
+      ["Pull the fire alarm", 15],
+      ["Call 911/emergency services", 8],
+      ["Stay low under smoke", 4],
+      ["Stop, drop, and roll", 2]
+    ],
+    "Name something a business should have to prevent or fight a fire": [
+      ["Fire extinguisher", 37],
+      ["Smoke detectors/fire alarms", 28],
+      ["Sprinkler system", 16],
+      ["Emergency exit signs", 9],
+      ["Fire blanket", 4]
+    ],
+    "What's something a billionaire will buy?": [
+      ["Private jet/plane", 33],
+      ["Yacht/supergiant boat", 24],
+      ["Private island", 19],
+      ["Mansion/multiple houses", 14],
+      ["Sports team/football club", 6]
+    ],
+    "Name something you might lose in the couch cushions": [
+      ["Remote control", 38],
+      ["Phone", 27],
+      ["Loose change", 17],
+      ["Keys", 11],
+      ["Toys", 5]
+    ],
+    "What are the top 5 most watched sports events?": [
+      ["FIFA World Cup", 44],
+      ["Summer Olympics", 29],
+      ["Cricket World Cup", 16],
+      ["Champions League Final", 8],
+      ["Super Bowl", 3]
+    ],
+    "Who are the last NBA champs in order?": [
+      ["OKC", 26],
+      ["Boston Celtics", 24],
+      ["Denver Nuggets", 21],
+      ["Golden State Warriors", 19],
+      ["Milwaukee Bucks", 10]
+    ]
+  },
+
   board: $("<div class='gameBoard'>"+
            
              "<!--- Scores --->"+
@@ -28,7 +101,7 @@ var app = {
              "</div>"+
            
            "</div>"),
-  // Utility functions
+
   shuffle: function(array){
     var currentIndex = array.length, temporaryValue, randomIndex;
     while (0 !== currentIndex) {
@@ -40,15 +113,7 @@ var app = {
     }
     return array;
   },
-  jsonLoaded: function(data){
-    console.clear()
-    app.allData   = data
-    app.questions = Object.keys(data)
-    app.shuffle(app.questions)
-    app.makeQuestion(app.currentQ)
-    $('body').append(app.board)
-  },
-  // Action functions
+
   makeQuestion: function(qNum){
     var qText  = app.questions[qNum]
     var qAnswr = app.allData[qText]
@@ -111,6 +176,7 @@ var app = {
     }
     cardHolders.on('click',showCard)
   },
+
   getBoardScore: function(){
     var cards = app.board.find('.card')
     var boardScore = app.board.find('#boardScore')
@@ -131,6 +197,7 @@ var app = {
       ease: Power3.easeOut,
     });
   },
+
   awardPoints: function(num){
     var num          = $(this).attr("data-team")
     var boardScore   = app.board.find('#boardScore')
@@ -154,17 +221,21 @@ var app = {
       ease: Power3.easeOut,
     });
   },
+
   changeQuestion: function(){
     app.currentQ++
     app.makeQuestion(app.currentQ)
   },
-  // Inital function
+
   init: function(){
-    $.getJSON(app.jsonFile, app.jsonLoaded)
+    app.questions = Object.keys(app.allData)
+    // app.shuffle(app.questions)
+    app.makeQuestion(app.currentQ)
+    $('body').append(app.board)
+
     app.board.find('#newQuestion' ).on('click', app.changeQuestion)
     app.board.find('#awardTeam1'  ).on('click', app.awardPoints)
     app.board.find('#awardTeam2'  ).on('click', app.awardPoints)
   }  
 }
 app.init()
-//http://www.qwizx.com/gssfx/usa/ff.htm
